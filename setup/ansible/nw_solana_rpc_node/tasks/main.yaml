@@ -82,7 +82,7 @@
 
 - name: Create Solana config
   template:
-    src: templates/validator-config.j2
+    src: templates/validator-config.json
     dest: "{{ solana_home }}/validator-config.json"
     owner: "{{ solana_user }}"
     group: "{{ solana_user }}"
