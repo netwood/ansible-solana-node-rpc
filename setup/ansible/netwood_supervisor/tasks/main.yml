@@ -1,0 +1,30 @@
+---
+# Установить supervisor и конфиг для приложения
+- name: Install supervisor
+  apt:
+    name: supervisor
+    state: present
+
+- name: Enable autostart and run supervisor service
+  service:
+    name: supervisor
+    state: started
+    enabled: yes
+
+- name: Create a logs directory if it does not exist
+  become: yes
+  become_user: '{{ user }}'  
+  file:
+    path: '{{ logs_directory }}'
+    state: directory
+    mode: '0755'
+
+- name: Create a supervisor config for app
+  template:
+    src: app.supervisor.conf.j2.ini
+    dest: '/etc/supervisor/conf.d/{{ app_name }}.supervisor.conf'
+
+- name: Restart app by supervisor
+  supervisorctl:
+    name: '{{ app_name }}:'
+    state: restarted

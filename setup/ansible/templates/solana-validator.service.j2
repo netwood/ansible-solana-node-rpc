@@ -1,0 +1,29 @@
+[Unit]
+Description=Solana Validator
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=solana
+Environment=PATH=/home/solana/.local/share/solana/install/active_release/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=SOLANA_METRICS_CONFIG="host=https://metrics.solana.com:8086,db=mainnet-beta,u=mainnet-beta_write,p=password"
+ExecStart=/home/solana/.local/share/solana/install/active_release/bin/solana-validator \
+    --ledger /var/solana/ledger \
+    --identity /home/solana/validator-keypair.json \
+    --rpc-port 8899 \
+    --private-rpc \
+    --no-voting \
+    --full-rpc-api \
+    --accounts-index-memory-limit-mb 10000 \
+    --no-port-check \
+    --json-rpc-url https://api.mainnet-beta.solana.com \
+    --only-known-rpc \
+    --dynamic-port-range 8000-8020 \
+    --entrypoint entrypoint.mainnet-beta.solana.com:8001 \
+    --expected-genesis-hash 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
+
+[Install]
+WantedBy=multi-user.target

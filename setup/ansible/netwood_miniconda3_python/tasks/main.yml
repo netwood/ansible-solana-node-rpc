@@ -1,0 +1,40 @@
+---
+# Miniconda3 Python 3 latest and PIP packages and apt deps
+- name: Miniconda3 check if already installed
+  stat: path={{ miniconda_directory }}/bin/conda
+  register: bin_conda
+  changed_when: bin_conda.stat.exists == False
+
+- name: Miniconda3 download installer
+  become: yes
+  become_user: '{{ user }}'
+  get_url:
+    url={{ miniconda_installer_url }}
+    dest={{ miniconda_installer_sh }}
+    mode=0755
+  register: miniconda_downloaded
+  when: bin_conda.stat.exists == False
+
+- name: Miniconda3 install
+  become: yes
+  become_user: '{{ user }}'
+  shell: "{{ miniconda_installer_sh }} -b -p {{ miniconda_directory }} creates={{ miniconda_directory }} executable=/bin/bash"
+  register: miniconda_installed
+  when: miniconda_downloaded is success
+
+- name: Miniconda3 delete installer
+  when: miniconda_installed is success
+  become: yes
+  become_user: root
+  file:
+    path: /tmp/{{ miniconda_installer_sh }}
+    state: absent
+
+- name: Miniconda3 add to the PATH in user .bashrc
+  become: yes
+  become_user: '{{ user }}'
+  lineinfile:
+    dest: "/home/{{ user }}/.bashrc"
+    line: export PATH={{ miniconda_directory }}/bin:$PATH
+    state: present
+  when: miniconda_modify_path_in_user_bashrc

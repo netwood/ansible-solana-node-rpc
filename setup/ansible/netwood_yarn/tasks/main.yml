@@ -1,0 +1,17 @@
+---
+# tasks file for netwood_yarn
+- name: Install the gpg key for Yarn
+  apt_key:
+    url: "https://dl.yarnpkg.com/debian/pubkey.gpg"
+    state: present
+
+- name: Install the Yarn repos
+  apt_repository:
+    repo: "deb https://dl.yarnpkg.com/debian/ stable main"
+    state: present
+    update_cache: yes
+
+- name: Install the Yarn
+  apt:
+    name: yarn
+    state: present

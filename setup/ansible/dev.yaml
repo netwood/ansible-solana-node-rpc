@@ -1,0 +1,35 @@
+# This is your main playbook you will run with:
+# ansible-playbook site.yml
+# You can kick off everything from this playbook.
+# Or, you can create separate playbooks in this directory for specific orchestration events.
+
+---
+- name: Completely deploy DEV app on localhost
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+  vars:
+    user: "{{ ansible_user | default(lookup('env', 'USER'), True) }}"
+    app_name: lubo_back_dev
+    app_directory: "{{ playbook_dir.split('/setup/ansible')[0] }}" # app repository root
+    logs_directory: '{{ app_directory }}/logs'
+    miniconda_directory: '/home/{{ user }}/miniconda3'
+    miniconda_installer_url: https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    miniconda_installer_sh: /tmp/miniconda.sh
+    miniconda_modify_path_in_user_bashrc: yes
+    admin_webapp_port: 3300
+    api_server_port: 4300
+    tg_bot_port: 5300
+    api_host: 'dev-bcb-admin.netwood.site'
+    admin_email: 'korsakov.igor@gmail.com'
+    mongodb_version: '6.0'
+    nginx_cerbot_ssl: false
+
+  roles:
+    - netwood_mongodb
+    - netwood_nodejs
+    - netwood_yarn
+    - netwood_miniconda3_python
+    - netwood_nginx_certbot
+    - netwood_project_packages
+    - netwood_supervisor

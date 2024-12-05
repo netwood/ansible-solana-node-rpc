@@ -1,0 +1,27 @@
+---
+- name: Install apt deps
+  vars:
+    packages:
+      - gcc
+      - python3-dev
+      - build-essential
+      - imagemagick
+      - redis-server
+      - zip
+  apt: 
+    name: "{{ packages }}"
+    state: present
+
+# Miniconda3 Python 3 latest and PIP packages and apt deps
+- name: Miniconda3 check if already installed
+  stat: path={{ miniconda_directory }}/bin/conda
+  register: bin_conda
+
+- name: Install PIP packages in VENV
+  become: yes
+  become_user: "{{ user }}"
+  when: bin_conda.stat.exists == True
+  pip:
+    # executable: '{{ miniconda_directory }}/bin/pip'
+    virtualenv: "{{ venv_directory }}"
+    requirements: "{{ project_directory }}/requirements.txt"

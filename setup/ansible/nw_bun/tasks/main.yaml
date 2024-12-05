@@ -1,0 +1,36 @@
+---
+- name: Check if Bun is already installed
+  command: which bun
+  register: bun_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Download and execute Bun installer
+  when: bun_check.rc != 0
+  block:
+    - name: Download Bun installer script
+      get_url:
+        url: https://bun.sh/install
+        dest: /tmp/bun-installer.sh
+        mode: '0755'
+
+    - name: Execute Bun installer
+      shell: curl -fsSL https://bun.sh/install | bash
+      args:
+        creates: /root/.bun/bin/bun
+      environment:
+        BUN_INSTALL: "/usr/local"
+
+    - name: Clean up installer script
+      file:
+        path: /tmp/bun-installer.sh
+        state: absent
+
+- name: Verify Bun installation
+  command: bun --version
+  register: bun_version
+  changed_when: false
+
+- name: Display Bun version
+  debug:
+    var: bun_version.stdout

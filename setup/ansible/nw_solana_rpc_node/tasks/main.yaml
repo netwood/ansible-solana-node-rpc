@@ -1,0 +1,97 @@
+---
+- name: Update and upgrade packages
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Install required packages
+  apt:
+    name:
+      - curl
+      - libudev-dev
+      - libssl-dev
+      - pkg-config
+      - build-essential
+      - git
+      - clang
+      - cmake
+    state: present
+
+- name: Create solana user
+  user:
+    name: "{{ solana_user }}"
+    home: "{{ solana_home }}"
+    shell: /bin/bash
+    system: yes
+
+- name: Create ledger directory
+  file:
+    path: "{{ ledger_path }}"
+    state: directory
+    owner: "{{ solana_user }}"
+    group: "{{ solana_user }}"
+    mode: '0755'
+
+- name: Download Solana installer
+  get_url:
+    url: https://release.anza.xyz/v{{ solana_version }}/install
+    dest: /tmp/solana-install
+    mode: '0755'
+  become_user: "{{ solana_user }}"
+
+- name: Install Solana
+  shell: /tmp/solana-install
+  environment:
+    SOLANA_INSTALL_DIR: "{{ solana_home }}/.local/share/solana/install"
+  become_user: "{{ solana_user }}"
+
+- name: Add Solana binary path to PATH
+  lineinfile:
+    path: "{{ solana_home }}/.bashrc"
+    line: 'export PATH="{{ solana_home }}/.local/share/solana/install/active_release/bin:$PATH"'
+    state: present
+  become_user: "{{ solana_user }}"
+
+ name: Check if validator keypair exists
+  stat:
+    path: "{{ solana_home }}/validator-keypair.json"
+  register: keypair_file
+
+- name: Generate validator keypair
+  shell: |
+    source {{ solana_home }}/.bashrc
+    solana-keygen new --no-bip39-passphrase -o {{ solana_home }}/validator-keypair.json
+  become_user: "{{ solana_user }}"
+  when: not keypair_file.stat.exists
+
+- name: Set correct permissions for keypair
+  file:
+    path: "{{ solana_home }}/validator-keypair.json"
+    owner: "{{ solana_user }}"
+    group: "{{ solana_user }}"
+    mode: '0600'
+  when: not keypair_file.stat.exists
+
+- name: Create Solana systemd service
+  template:
+    src: templates/solana-validator.service.j2
+    dest: /etc/systemd/system/solana-validator.service
+    mode: '0644'
+
+- name: Create Solana config
+  template:
+    src: templates/validator-config.j2
+    dest: "{{ solana_home }}/validator-config.json"
+    owner: "{{ solana_user }}"
+    group: "{{ solana_user }}"
+    mode: '0644'
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and start Solana validator service
+  systemd:
+    name: solana-validator
+    enabled: yes
+    state: started

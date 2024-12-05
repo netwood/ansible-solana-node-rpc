@@ -1,0 +1,27 @@
+# This is your main playbook you will run with:
+# ansible-playbook site.yml
+# You can kick off everything from this playbook.
+# Or, you can create separate playbooks in this directory for specific orchestration events.
+
+---
+- name: Completely deploy PRODUCTION app on localhost
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+  vars:
+    solana_version: 2.1.4
+    solana_user: solana
+    solana_home: /home/solana
+    ledger_path: /var/solana/ledger
+    
+  roles:
+    # - { role: netwood_mongodb, tags: netwood_mongodb }
+    # - { role: netwood_nodejs, tags: netwood_nodejs }
+    # - { role: netwood_yarn, tags: netwood_yarn }
+    # - { role: netwood_miniconda3_python, tags: netwood_miniconda3_python }
+    # - { role: netwood_nginx_certbot, tags: netwood_nginx_certbot }
+    # - { role: netwood_project_packages, tags: netwood_project_packages }
+    # - { role: nw_bun, tags: nw_bun }
+    # - { role: netwood_supervisor, tags: netwood_supervisor }
+    - { role: netwood_solana_rpc_node, tags: netwood_solana_rpc_node }
+    

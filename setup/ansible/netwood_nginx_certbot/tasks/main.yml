@@ -1,0 +1,120 @@
+---
+# Nginx
+- name: Import the public key used by the package management system.
+  become: yes
+  become_user: 'root'
+  command: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
+
+- name: Install the Nginx repo
+  apt_repository:
+    repo: "deb http://nginx.org/packages/ubuntu/ jammy nginx"
+    state: present
+    update_cache: yes
+
+- name: Install NGINX
+  vars:
+    packages:
+      - nginx
+  apt: 
+    name: "{{ packages }}"
+    state: present
+
+- name: Install certbot and python3-certbot-nginx packages
+  vars:
+    packages:
+      - certbot
+      - python3-certbot-nginx
+  apt: 
+    name: "{{ packages }}"
+    state: present
+  when: nginx_cerbot_ssl
+
+
+# DH params
+- name: Check if dhparams already exists.
+  stat:
+    path: /etc/nginx/dhparams.pem
+  register: nginx_dhparams
+
+- name: Generate dhparams
+  shell: openssl dhparam -out /etc/nginx/dhparams.pem 2048
+  args:
+    creates: /etc/nginx/dhparams.pem
+  when: not nginx_dhparams.stat.exists
+
+
+
+# NGINX CONF AND SITE-ENABLED DIR
+- name: Create a nginx config
+  template:
+    src: nginx.conf.j2
+    dest: '/etc/nginx/nginx.conf'
+
+- name: Create a /etc/nginx/sites-enabled directory if it does not exist
+  file:
+    path: '/etc/nginx/sites-enabled'
+    state: directory
+    mode: '0755'
+
+
+
+# SSL CERTS
+- name: Check if certificate already exists {{ api_host }}.
+  stat:
+    path: /etc/letsencrypt/live/{{ api_host }}/cert.pem
+  register: letsencrypt_cert_admin
+
+- name: Check if certificate already exists {{ tron_node_proxy_host }}.
+  stat:
+    path: /etc/letsencrypt/live/{{ tron_node_proxy_host }}/cert.pem
+  register: letsencrypt_cert_tron_node_proxy_host
+# 
+
+- name: Stop services to allow certbot to generate a cert.
+  service:
+    name: nginx
+    state: stopped
+  when: ((not letsencrypt_cert_admin.stat.exists) or (not letsencrypt_cert_tron_node_proxy_host.stat.exists)) and nginx_cerbot_ssl
+
+# 
+
+- name: Generate new certificate if one doesn't exist {{ api_host }}.
+  command: "certbot certonly --standalone --noninteractive --agree-tos --email {{ admin_email }} -d {{ api_host }}"
+  when: not letsencrypt_cert_admin.stat.exists and nginx_cerbot_ssl
+
+- name: Generate new certificate if one doesn't exist {{ tron_node_proxy_host }}.
+  command: "certbot certonly --standalone --noninteractive --agree-tos --email {{ admin_email }} -d {{ tron_node_proxy_host }}"
+  when: not letsencrypt_cert_tron_node_proxy_host.stat.exists and nginx_cerbot_ssl
+
+# NGINX APP CONF
+- name: Create a nginx ssl config for app
+  template:
+    src: app.nginx.conf.j2
+    dest: '/etc/nginx/sites-enabled/{{ app_name }}.nginx.conf'
+  when: nginx_cerbot_ssl
+
+- name: Create a nginx nossl config for app
+  template:
+    src: app.nossl.nginx.conf.j2
+    dest: '/etc/nginx/sites-enabled/{{ app_name }}.nginx.conf'
+  when: not nginx_cerbot_ssl
+
+
+
+# AUTOSTART AND RESTART NGINX
+- name: Enable autostart and run Nginx service
+  service:
+    name: nginx
+    state: restarted
+    enabled: yes
+
+
+
+
+- name: Change owner group to www-data for /static directory
+  ansible.builtin.file:
+    path: '{{ app_directory }}/static'
+    state: directory
+    recurse: yes
+    # owner: foo
+    group: www-data

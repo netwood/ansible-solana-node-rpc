@@ -1,0 +1,28 @@
+---
+# tasks file for mongodb
+# - name: Import the public key used by the package management system.
+#   command: sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+
+- name: Install the gpg key for MongoDB
+  apt_key:
+    # url: "https://pgp.mongodb.com/server-{{ mongodb_version }}.asc"
+    url: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc"
+    state: present
+
+- name: Install the MongoDB repo
+  apt_repository:
+    # repo: "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_version }} multiverse"
+    repo: "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/{{ mongodb_version }} multiverse"
+    state: present
+    update_cache: yes
+
+- name: Install the MongoDB packages
+  apt: 
+    name: mongodb-org
+    state: present
+
+- name: Enable autostart and run mongod service
+  service:
+    name: mongod
+    state: started
+    enabled: yes
