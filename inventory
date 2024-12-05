@@ -1,2 +1,2 @@
 [rpc_nodes]
-localhost solana_network=mainnet cpu_governor=bios
+localhost solana_network=mainnet cpu_governor=bios connection=local
