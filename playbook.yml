@@ -1,4 +1,5 @@
 - name: deploy rpc hosts
+  connection: local
   remote_user: root
   hosts:
     - rpc_nodes
