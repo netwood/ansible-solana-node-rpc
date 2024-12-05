@@ -23,5 +23,5 @@
     # - { role: netwood_project_packages, tags: netwood_project_packages }
     # - { role: nw_bun, tags: nw_bun }
     # - { role: netwood_supervisor, tags: netwood_supervisor }
-    - { role: netwood_solana_rpc_node, tags: netwood_solana_rpc_node }
+    - { role: nw_solana_rpc_node, tags: nw_solana_rpc_node }
     
