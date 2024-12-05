@@ -32,6 +32,14 @@
     group: "{{ solana_user }}"
     mode: '0755'
 
+- name: Create accounts directory
+  file:
+    path: "{{ accounts_path }}"
+    state: directory
+    owner: "{{ solana_user }}"
+    group: "{{ solana_user }}"
+    mode: '0755'
+
 - name: Download Solana installer
   get_url:
     url: https://release.anza.xyz/v{{ solana_version }}/install
@@ -87,6 +95,48 @@
     owner: "{{ solana_user }}"
     group: "{{ solana_user }}"
     mode: '0644'
+
+- name: Configure sysctl for Solana validator
+  copy:
+    dest: /etc/sysctl.d/21-solana-validator.conf
+    content: |
+      # Increase UDP buffer sizes
+      net.core.rmem_default = 134217728
+      net.core.rmem_max = 134217728
+      net.core.wmem_default = 134217728
+      net.core.wmem_max = 134217728
+
+      # Increase memory mapped files limit
+      vm.max_map_count = 1000000
+
+      # Increase number of allowed open file descriptors
+      fs.nr_open = 1000000
+    mode: '0644'
+
+- name: Apply sysctl settings
+  command: sysctl -p /etc/sysctl.d/21-solana-validator.conf
+
+- name: Configure security limits for Solana
+  copy:
+    dest: /etc/security/limits.d/90-solana-nofiles.conf
+    content: |
+      # Increase process file descriptor count limit
+      * - nofile 1000000
+    mode: '0644'
+
+- name: Update systemd system.conf
+  lineinfile:
+    path: /etc/systemd/system.conf
+    regexp: '^#?DefaultLimitNOFILE='
+    line: 'DefaultLimitNOFILE=1000000'
+    state: present
+
+- name: Set vm.max_map_count for current session
+  sysctl:
+    name: vm.max_map_count
+    value: '1000000'
+    state: present
+    reload: yes
 
 - name: Reload systemd
   systemd:

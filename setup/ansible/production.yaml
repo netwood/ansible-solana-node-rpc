@@ -13,6 +13,7 @@
     solana_user: solana
     solana_home: /home/solana
     ledger_path: /var/solana/ledger
+    accounts_path: /var/solana/accounts
     solana_bin_path: "{{ solana_home }}/.local/share/solana/install/active_release/bin"
     
   roles:
