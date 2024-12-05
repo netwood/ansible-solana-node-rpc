@@ -59,9 +59,11 @@
 
 - name: Generate validator keypair
   shell: |
-    source {{ solana_home }}/.bashrc
-    solana-keygen new --no-bip39-passphrase -o {{ solana_home }}/validator-keypair.json
+    {{ solana_bin_path }}/solana-keygen new --no-bip39-passphrase -o {{ solana_home }}/validator-keypair.json
+  become: yes
   become_user: "{{ solana_user }}"
+  environment:
+    PATH: "{{ solana_bin_path }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   when: not keypair_file.stat.exists
 
 - name: Set correct permissions for keypair

@@ -13,6 +13,7 @@
     solana_user: solana
     solana_home: /home/solana
     ledger_path: /var/solana/ledger
+    solana_bin_path: "{{ solana_home }}/.local/share/solana/install/active_release/bin"
     
   roles:
     # - { role: netwood_mongodb, tags: netwood_mongodb }
