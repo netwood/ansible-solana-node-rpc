@@ -52,7 +52,7 @@
     state: present
   become_user: "{{ solana_user }}"
 
- name: Check if validator keypair exists
+- name: Check if validator keypair exists
   stat:
     path: "{{ solana_home }}/validator-keypair.json"
   register: keypair_file
