@@ -12,8 +12,8 @@
     solana_version: 2.1.4
     solana_user: solana
     solana_home: /home/solana
-    ledger_path: /var/solana/ledger
-    accounts_path: /var/solana/accounts
+    ledger_path: /mnt/solana/ledger
+    accounts_path: /mnt/solana/accounts
     solana_bin_path: "{{ solana_home }}/.local/share/solana/install/active_release/bin"
     
   roles:

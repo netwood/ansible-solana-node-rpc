@@ -16,8 +16,8 @@ ExecStart=/home/solana/.local/share/solana/install/active_release/bin/agave-vali
     --only-known-rpc \
     --full-rpc-api \
     --no-voting \
-    --ledger /var/solana/ledger \
-    --accounts /var/solana/accounts \
+    --ledger {{ ledger_path }} \
+    --accounts {{ accounts_path }} \
     --log /home/solana/solana-rpc.log \
     --rpc-port 8899 \
     --rpc-bind-address 0.0.0.0 \
