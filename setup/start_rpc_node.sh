@@ -22,4 +22,11 @@ exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator
     --known-validator DE1bawNcRJB9rVm3buyMVfr8mBEoyyu73NBovf2oXJsJ \
     --known-validator CakcnaRDHka2gXyfbEd2d3xsvkJkqsLw2akB3zsN1D2S \
     --wal-recovery-mode skip_any_corrupted_record \
-    --limit-ledger-size
+    --limit-ledger-size \
+    --max-genesis-archive-unpacked-size 500000000 \
+    --snapshot-interval-slots 5000 \
+    --no-port-check \
+    --no-snapshot-fetch \
+    --accounts-index-memory-limit-mb 128000 \
+    --accounts-db-skip-shrink \
+    --rocksdb-shred-compaction

@@ -36,13 +36,11 @@ ExecStart=/home/solana/.local/share/solana/install/active_release/bin/agave-vali
     --wal-recovery-mode skip_any_corrupted_record \
     --limit-ledger-size \
     --max-genesis-archive-unpacked-size 500000000 \
-    --snapshot-interval-slots 500 \
+    --snapshot-interval-slots 5000 \
     --no-port-check \
     --no-snapshot-fetch \
-    --accounts-index-memory-limit-mb 40960 \
+    --accounts-index-memory-limit-mb 128000 \
     --accounts-db-skip-shrink \
-    --disable-accounts-disk-cache \
-    --incremental-snapshots \
     --rocksdb-shred-compaction
 
 [Install]
