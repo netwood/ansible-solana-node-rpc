@@ -4,8 +4,8 @@ exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator
     --only-known-rpc \
     --full-rpc-api \
     --no-voting \
-    --ledger /var/solana/ledger \
-    --accounts /var/solana/accounts \
+    --ledger /mnt/solana/ledger \
+    --accounts /mnt/solana/accounts \
     --log /home/solana/solana-rpc.log \
     --rpc-port 8899 \
     --rpc-bind-address 0.0.0.0 \
@@ -21,12 +21,21 @@ exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator
     --known-validator GdnSyH3YtwcxFvQrVVJMm1JhTS4QVX7MFsX56uJLUfiZ \
     --known-validator DE1bawNcRJB9rVm3buyMVfr8mBEoyyu73NBovf2oXJsJ \
     --known-validator CakcnaRDHka2gXyfbEd2d3xsvkJkqsLw2akB3zsN1D2S \
-    --wal-recovery-mode skip_any_corrupted_record \
-    --limit-ledger-size \
-    --max-genesis-archive-unpacked-size 500000000 \
-    --snapshot-interval-slots 5000 \
-    --no-port-check \
-    --no-snapshot-fetch \
+    --accounts-db-cache-limit-mb 32768 \
     --accounts-index-memory-limit-mb 128000 \
-    --accounts-db-skip-shrink \
-    --rocksdb-shred-compaction
+    --limit-ledger-size \
+    --maximum-local-snapshot-age 500 \
+    --snapshot-interval-slots 500 \
+    --snapshot-archive-format zstd \
+    --rpc-send-leader-count 4 \
+    --rpc-threads 32 \
+    --tpu-connection-pool-size 8 \
+    --accounts-index-scan-results-limit-mb 32768 \
+    --rocksdb-fifo-shred-storage-size 50000000000 \
+    --account-index program-id \
+    --account-index spl-token-owner \
+    --account-index spl-token-mint \
+    --health-check-slot-distance 50 \
+    --use-snapshot-archives-at-startup when-newest \
+    --wal-recovery-mode skip_any_corrupted_record \
+    --minimal-snapshot-download-speed 20971520
