@@ -1,6 +1,4 @@
-#!/bin/bash
-exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator \
-    --identity /home/solana/validator-keypair.json \
+--identity /home/solana/validator-keypair.json \
     --only-known-rpc \
     --full-rpc-api \
     --no-voting \
