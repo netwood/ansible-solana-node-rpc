@@ -96,6 +96,14 @@
     group: "{{ solana_user }}"
     mode: '0644'
 
+- name: Create Solana Accounts DB config
+  template:
+    src: templates/accounts-db-config.yml
+    dest: "{{ solana_home }}/accounts-db-config.yml"
+    owner: "{{ solana_user }}"
+    group: "{{ solana_user }}"
+    mode: '0644'
+
 - name: Configure sysctl for Solana validator
   copy:
     dest: /etc/sysctl.d/21-solana-validator.conf

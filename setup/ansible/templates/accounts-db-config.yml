@@ -1,0 +1,4 @@
+accounts_db:
+  skip_rewrites: true
+  ancient_append_vec_offset: 500000000
+  shrink_ratio: 0.5
