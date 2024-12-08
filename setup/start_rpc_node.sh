@@ -21,11 +21,16 @@ exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator
     --known-validator GdnSyH3YtwcxFvQrVVJMm1JhTS4QVX7MFsX56uJLUfiZ \
     --known-validator DE1bawNcRJB9rVm3buyMVfr8mBEoyyu73NBovf2oXJsJ \
     --known-validator CakcnaRDHka2gXyfbEd2d3xsvkJkqsLw2akB3zsN1D2S \
+    --known-validator 9QxCLckBiJc783jnMvXZubK4wH86Eqqvashtrwvcsgkv \
+    --known-validator Ft5fbkqNa76vnsjYNwjDZUXoTWpP7VYm3mtsaQckQADN \
+    --known-validator 9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF \
+    --repair-validator 7Np41oeYqPefeNQEHSv1UDhYrehxin3NStELsSKCT4K2 \
+    --repair-validator DE1bawNcRJB9rVm3buyMVfr8mBEoyyu73NBovf2oXJsJ \
     --accounts-db-cache-limit-mb 32768 \
     --accounts-index-memory-limit-mb 128000 \
     --limit-ledger-size \
-    --maximum-local-snapshot-age 500 \
-    --snapshot-interval-slots 500 \
+    --maximum-local-snapshot-age 1500 \
+    --snapshot-interval-slots 1000 \
     --snapshot-archive-format zstd \
     --rpc-send-leader-count 4 \
     --rpc-threads 32 \
@@ -38,4 +43,4 @@ exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator
     --health-check-slot-distance 50 \
     --use-snapshot-archives-at-startup when-newest \
     --wal-recovery-mode skip_any_corrupted_record \
-    --minimal-snapshot-download-speed 20971520
+    --minimal-snapshot-download-speed 10485760
