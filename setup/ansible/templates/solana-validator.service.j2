@@ -13,7 +13,6 @@ Environment=PATH=/home/solana/.local/share/solana/install/active_release/bin:/us
 Environment=SOLANA_METRICS_CONFIG="host=https://metrics.solana.com:8086,db=mainnet-beta,u=mainnet-beta_write,p=password"
 ExecStart=/home/solana/.local/share/solana/install/active_release/bin/agave-validator \
     --identity /home/solana/validator-keypair.json \
-    --only-known-rpc \
     --full-rpc-api \
     --no-voting \
     --ledger {{ ledger_path }} \
