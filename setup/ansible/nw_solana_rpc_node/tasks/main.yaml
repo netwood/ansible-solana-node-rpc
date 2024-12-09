@@ -40,18 +40,30 @@
     group: "{{ solana_user }}"
     mode: '0755'
 
-- name: Download Solana installer
+- name: Download Solana installer as root
   get_url:
-    url: https://release.anza.xyz/v{{ solana_version }}/install
-    dest: /tmp/solana-install
+    url: "https://release.anza.xyz/v{{ solana_version }}/install"
+    dest: "{{ solana_home }}/solana-install"
     mode: '0755'
-  become_user: "{{ solana_user }}"
-  
+  become: yes
+  become_user: root
+
+- name: Fix ownership
+  file:
+    path: "{{ solana_home }}/solana-install"
+    owner: "{{ solana_user }}"
+    group: "{{ solana_user }}"
+    mode: '0755'
+  become: yes
+  become_user: root
+
 - name: Install Solana
-  shell: /tmp/solana-install
+  shell: "{{ solana_home }}/solana-install"
   environment:
     SOLANA_INSTALL_DIR: "{{ solana_home }}/.local/share/solana/install"
+  become: yes
   become_user: "{{ solana_user }}"
+
 
 - name: Add Solana binary path to PATH
   lineinfile:
