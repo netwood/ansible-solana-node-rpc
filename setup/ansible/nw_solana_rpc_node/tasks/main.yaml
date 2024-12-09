@@ -45,7 +45,12 @@
     url: https://release.anza.xyz/v{{ solana_version }}/install
     dest: /tmp/solana-install
     mode: '0755'
-  become_user: "{{ solana_user }}"
+
+- name: Set ownership Solana installer
+  file:
+    path: /tmp/solana-install
+    owner: "{{ solana_user }}"
+    group: "{{ solana_user }}"
 
 - name: Install Solana
   shell: /tmp/solana-install
