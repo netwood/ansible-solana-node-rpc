@@ -63,6 +63,7 @@
     SOLANA_INSTALL_DIR: "{{ solana_home }}/.local/share/solana/install"
   become: yes
   become_user: "{{ solana_user }}"
+  become_method: sudo
 
 
 - name: Add Solana binary path to PATH
