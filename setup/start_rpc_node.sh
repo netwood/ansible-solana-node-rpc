@@ -7,7 +7,7 @@ exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator
     --ledger /mnt/solana/ledger \
     --accounts /mnt/solana/accounts \
     --log /home/solana/solana-rpc.log \
-    --rpc-port 8899 \
+    --rpc-port 8877 \
     --rpc-bind-address 0.0.0.0 \
     --private-rpc \
     --dynamic-port-range 8000-8020 \
@@ -26,5 +26,4 @@ exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator
     --known-validator 9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF \
     --repair-validator 7Np41oeYqPefeNQEHSv1UDhYrehxin3NStELsSKCT4K2 \
     --repair-validator DE1bawNcRJB9rVm3buyMVfr8mBEoyyu73NBovf2oXJsJ \
-    --limit-ledger-size \
-    --rpc-pubsub-enable 
+    --limit-ledger-size
