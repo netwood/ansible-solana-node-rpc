@@ -40,25 +40,25 @@
     group: "{{ solana_user }}"
     mode: '0755'
 
-- name: Download Solana installer
-  get_url:
-    url: https://release.anza.xyz/v{{ solana_version }}/install
-    dest: /tmp/solana-install
-    mode: '0755'
-  become_user: "{{ solana_user }}"
+# - name: Download Solana installer
+#   get_url:
+#     url: https://release.anza.xyz/v{{ solana_version }}/install
+#     dest: /tmp/solana-install
+#     mode: '0755'
+#   become_user: "{{ solana_user }}"
 
-- name: Install Solana
-  shell: /tmp/solana-install
-  environment:
-    SOLANA_INSTALL_DIR: "{{ solana_home }}/.local/share/solana/install"
-  become_user: "{{ solana_user }}"
+# - name: Install Solana
+#   shell: /tmp/solana-install
+#   environment:
+#     SOLANA_INSTALL_DIR: "{{ solana_home }}/.local/share/solana/install"
+#   become_user: "{{ solana_user }}"
 
-- name: Add Solana binary path to PATH
-  lineinfile:
-    path: "{{ solana_home }}/.bashrc"
-    line: 'export PATH="{{ solana_home }}/.local/share/solana/install/active_release/bin:$PATH"'
-    state: present
-  become_user: "{{ solana_user }}"
+# - name: Add Solana binary path to PATH
+#   lineinfile:
+#     path: "{{ solana_home }}/.bashrc"
+#     line: 'export PATH="{{ solana_home }}/.local/share/solana/install/active_release/bin:$PATH"'
+#     state: present
+#   become_user: "{{ solana_user }}"
 
 - name: Check if validator keypair exists
   stat:
