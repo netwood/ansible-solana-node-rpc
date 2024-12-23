@@ -1,5 +1,6 @@
 #!/bin/bash
 exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator \
+    --geyser-plugin-config /home/solana/yellowstone-grpc/yellowstone-grpc-geyser/config.json \
     --identity /home/solana/validator-keypair.json \
     --only-known-rpc \
     --full-rpc-api \
@@ -26,4 +27,10 @@ exec /home/solana/.local/share/solana/install/active_release/bin/agave-validator
     --known-validator 9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF \
     --repair-validator 7Np41oeYqPefeNQEHSv1UDhYrehxin3NStELsSKCT4K2 \
     --repair-validator DE1bawNcRJB9rVm3buyMVfr8mBEoyyu73NBovf2oXJsJ \
-    --limit-ledger-size
+    --limit-ledger-size \
+    --accounts-db-cache-limit-mb 131072 \
+    --accounts-index-scan-results-limit-mb 131072 \
+    --accounts-index-memory-limit-mb 131072 \
+    --account-index spl-token-owner \
+    --account-index spl-token-mint \
+    --account-index program-id
