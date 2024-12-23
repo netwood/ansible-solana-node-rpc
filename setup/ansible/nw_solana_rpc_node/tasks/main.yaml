@@ -158,6 +158,36 @@
     daemon_reload: yes
 
 # GEYSER
+- name: Check if rust is installed
+  command: which cargo
+  register: cargo_check
+  ignore_errors: yes
+
+- name: Install rust and cargo
+  shell: |
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
+  when: cargo_check.rc != 0
+  become: yes
+  become_user: solana
+
+- name: Add cargo to PATH
+  lineinfile:
+    path: /home/solana/.bashrc
+    line: 'source $HOME/.cargo/env'
+    owner: solana
+    group: solana
+  when: cargo_check.rc != 0
+
+- name: Install build dependencies
+  apt:
+    name:
+      - build-essential
+      - pkg-config
+      - libssl-dev
+      - protobuf-compiler
+    state: present
+
 - name: Check if yellowstone-grpc directory exists
   stat:
     path: /home/solana/yellowstone-grpc
