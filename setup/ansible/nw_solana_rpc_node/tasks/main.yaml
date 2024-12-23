@@ -157,6 +157,46 @@
   systemd:
     daemon_reload: yes
 
+# GEYSER
+- name: Check if yellowstone-grpc directory exists
+  stat:
+    path: /home/solana/yellowstone-grpc
+  register: yellowstone_dir
+
+- name: Check if geyser plugin is built
+  stat:
+    path: /home/solana/yellowstone-grpc/target/release/libyellowstone_grpc_geyser.so
+  register: geyser_plugin
+
+- name: Clone yellowstone-grpc repository
+  git:
+    repo: https://github.com/rpcpool/yellowstone-grpc.git
+    dest: /home/solana/yellowstone-grpc
+    version: master
+    owner: solana
+    group: solana
+  when: not yellowstone_dir.stat.exists
+
+- name: Build yellowstone-grpc
+  shell:
+    cmd: cargo build --release
+    chdir: /home/solana/yellowstone-grpc
+  environment:
+    RUSTFLAGS: "-C target-cpu=native"
+  become: yes
+  become_user: solana
+  when: not geyser_plugin.stat.exists
+
+- name: Copy geyser plugin config template
+  template:
+    src: geyser-config.json
+    dest: /home/solana/yellowstone-grpc/yellowstone-grpc-geyser/config.json
+    mode: '0644'
+    owner: solana
+    group: solana
+
+
+
 - name: Enable and start Solana validator service
   systemd:
     name: solana-validator
