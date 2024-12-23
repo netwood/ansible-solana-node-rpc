@@ -166,15 +166,17 @@
 - name: Install rust and cargo
   shell: |
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    source "$HOME/.cargo/env"
+    . "$HOME/.cargo/env"
+  args:
+    executable: /bin/bash
   when: cargo_check.rc != 0
   become: yes
   become_user: solana
 
 - name: Add cargo to PATH
   lineinfile:
-    path: /home/solana/.bashrc
-    line: 'source $HOME/.cargo/env'
+    path: /home/solana/.profile
+    line: '. $HOME/.cargo/env'
     owner: solana
     group: solana
   when: cargo_check.rc != 0
