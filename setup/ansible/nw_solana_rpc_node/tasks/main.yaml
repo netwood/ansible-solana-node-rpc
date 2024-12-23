@@ -209,11 +209,18 @@
     group: solana
   when: not yellowstone_dir.stat.exists
 
+- name: Set cargo path
+  set_fact:
+    cargo_path: "/home/solana/.cargo/bin/cargo"
+
 - name: Build yellowstone-grpc
   shell:
-    cmd: cargo build --release
+    cmd: "{{ cargo_path }} build --release"
     chdir: /home/solana/yellowstone-grpc
+  args:
+    executable: /bin/bash
   environment:
+    PATH: "/home/solana/.cargo/bin:{{ ansible_env.PATH }}"
     RUSTFLAGS: "-C target-cpu=native"
   become: yes
   become_user: solana
