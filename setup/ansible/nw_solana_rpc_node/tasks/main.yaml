@@ -8,7 +8,7 @@
   apt:
     name:
       - curl
-      - libudev-dev
+      # - libudev-dev
       - libssl-dev
       - pkg-config
       - build-essential
